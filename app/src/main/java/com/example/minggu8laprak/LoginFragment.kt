@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.minggu8laprak.databinding.FragmentLoginBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import org.w3c.dom.Text
 
@@ -54,10 +55,12 @@ class LoginFragment : Fragment() {
                 && inputPassword.text.toString() == arguments?.getString("password")) {
                 val intent = Intent(context, DashboardActivity::class.java)
                 startActivity(intent)
+            } else {
+                Snackbar.make(view, "Username atau Password salah", Snackbar.LENGTH_LONG).show()
             }
         }
         val alreadyAccount = view.findViewById<TextView>(R.id.already_account)
-        spannableClick(alreadyAccount, "Login")
+        spannableClick(alreadyAccount, "Register")
         val forgotPassword = view.findViewById<TextView>(R.id.forgotPassword)
         spannableClick(forgotPassword, "Forgot Password?")
         return view
@@ -72,9 +75,6 @@ class LoginFragment : Fragment() {
                 startActivity(intent)
             }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-            }
         }
         val int1 = tv.text.toString().indexOf(clickString)
         val int2 = int1 + clickString.length
