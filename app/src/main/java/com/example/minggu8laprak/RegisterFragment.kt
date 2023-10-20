@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
@@ -48,6 +49,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         val view = inflater.inflate(R.layout.fragment_register, container, false)
         val registerButton = view.findViewById<Button>(R.id.register_button)
         val inputUsername = view.findViewById<TextInputEditText>(R.id.input_username)
@@ -55,6 +57,7 @@ class RegisterFragment : Fragment() {
         val inputEmail = view.findViewById<TextInputEditText>(R.id.input_email)
         val inputPhone = view.findViewById<TextInputEditText>(R.id.input_phone_num)
 
+        val termsAndConditionsCheckBox = view.findViewById<CheckBox>(R.id.terms_and_conditions_box)
         val termsConditions = view.findViewById<TextView>(R.id.terms_and_conditions)
         spannableClick(termsConditions, "Terms")
         spannableClick(termsConditions, "Conditions")
@@ -62,25 +65,27 @@ class RegisterFragment : Fragment() {
         spannableClick(alreadyAccount, "Login")
 
         registerButton.setOnClickListener {
+
             if(inputUsername.text.toString().isNotEmpty() && inputPassword.text.toString().isNotEmpty()
                 && inputEmail.text.toString().isNotEmpty() && inputPhone.text.toString().isNotEmpty()) {
-                val emailRegex = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
-                val phoneRegex = Pattern.compile("^(\\+62|0)[0-9]{9,11}$")
-                if(!emailRegex.matcher(inputEmail.text.toString()).matches()) {
-                    Snackbar.make(view, "Email is not valid", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
-                } else if(!phoneRegex.matcher(inputPhone.text.toString()).matches()) {
-                    Snackbar.make(view, "Phone number is not valid", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
+                if(termsAndConditionsCheckBox.isChecked) {
+                    val emailRegex = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")
+                    val phoneRegex = Pattern.compile("^(\\+62|0)[0-9]{9,11}$")
+                    if(!emailRegex.matcher(inputEmail.text.toString()).matches()) {
+                        Snackbar.make(view, "Email tidak valid", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
+                    } else if(!phoneRegex.matcher(inputPhone.text.toString()).matches()) {
+                        Snackbar.make(view, "Phone tidak valid", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
+                    } else {
+                        listener?.onInformationReceived(inputUsername.text.toString(), inputPassword.text.toString())
+                    }
                 } else {
-                    listener?.onInformationReceived(inputUsername.text.toString(), inputPassword.text.toString())
+                    Snackbar.make(view, "Mohon centang syarat dan ketentuan", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
                 }
             } else {
                 Snackbar.make(view, "Mohon isi bagan yang kosong", Snackbar.LENGTH_SHORT).setAnchorView(alreadyAccount).show()
             }
-
-
-
-
         }
+
         inputPhone.setOnFocusChangeListener { view, b ->
             if(b) {
                 inputPhone.setHint("Phone: (+62)xxxxxxxxxxx")
@@ -95,13 +100,14 @@ class RegisterFragment : Fragment() {
         val spannableString = SpannableString(tv.text)
         val clickableSpan = object : ClickableSpan(){
             override fun onClick(widget: View) {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-                startActivity(intent)
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
+                if(clickString == "Terms" || clickString == "Conditions") {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                    startActivity(intent)
+                } else {
+                    val activity = activity as MainActivity
+                    activity.goNextFragment(1)
+                }
             }
         }
         val int1 = tv.text.toString().indexOf(clickString)

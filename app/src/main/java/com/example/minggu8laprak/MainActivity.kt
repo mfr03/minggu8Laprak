@@ -24,8 +24,7 @@ class MainActivity : AppCompatActivity(), FragmentRegisterListener{
     private lateinit var binding : ActivityMainBinding
     private lateinit var tabAdapter : TabAdapter
     private lateinit var viewPager2: ViewPager2
-    private lateinit var fragmentLogin: LoginFragment
-    private lateinit var fragmentRegister: RegisterFragment
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -53,8 +52,10 @@ class MainActivity : AppCompatActivity(), FragmentRegisterListener{
         val fragment = tabAdapter.getFragment(1)
         fragment.arguments = bundle
         viewPager2.setCurrentItem(1, true)
-
     }
 
+    fun goNextFragment(item: Int) {
+        viewPager2.setCurrentItem(item, true)
+    }
 
 }

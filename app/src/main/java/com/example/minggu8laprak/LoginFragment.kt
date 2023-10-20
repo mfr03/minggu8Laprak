@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.minggu8laprak.databinding.FragmentLoginBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import org.w3c.dom.Text
 
@@ -49,17 +50,22 @@ class LoginFragment : Fragment() {
         val loginButton = view.findViewById<Button>(R.id.login_button)
         val inputUsername = view.findViewById<TextInputEditText>(R.id.input_username)
         val inputPassword = view.findViewById<TextInputEditText>(R.id.input_password)
+
         loginButton.setOnClickListener {
             if(inputUsername.text.toString() == arguments?.getString("username")
                 && inputPassword.text.toString() == arguments?.getString("password")) {
                 val intent = Intent(context, DashboardActivity::class.java)
                 startActivity(intent)
+            } else {
+                Snackbar.make(view, "Username atau Password salah", Snackbar.LENGTH_LONG).show()
             }
         }
+
         val alreadyAccount = view.findViewById<TextView>(R.id.already_account)
-        spannableClick(alreadyAccount, "Login")
+        spannableClick(alreadyAccount, "Register")
         val forgotPassword = view.findViewById<TextView>(R.id.forgotPassword)
         spannableClick(forgotPassword, "Forgot Password?")
+
         return view
     }
 
@@ -67,15 +73,19 @@ class LoginFragment : Fragment() {
         val spannableString = SpannableString(tv.text)
         val clickableSpan = object : ClickableSpan(){
             override fun onClick(widget: View) {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-                startActivity(intent)
+                if(clickString == "Forgot Password?") {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                    startActivity(intent)
+                } else {
+                    val activity = activity as MainActivity
+                    activity.goNextFragment(0)
+                }
+
             }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-            }
         }
+
         val int1 = tv.text.toString().indexOf(clickString)
         val int2 = int1 + clickString.length
         spannableString.setSpan(clickableSpan, int1, int2, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
