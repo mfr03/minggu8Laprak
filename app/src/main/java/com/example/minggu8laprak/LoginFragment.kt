@@ -83,7 +83,6 @@ class LoginFragment : Fragment() {
                 }
 
             }
-
         }
 
         val int1 = tv.text.toString().indexOf(clickString)
